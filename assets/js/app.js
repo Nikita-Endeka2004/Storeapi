@@ -1,11 +1,21 @@
-
-
 const url = "https://fakestoreapi.com/products";
 
-let data = await fetch(url);
-    data = await data.json();
-
     const model = {
+
+      rates: [],
+
+      async load(){
+
+            let data = await fetch(url);
+            data = await data.json();
+
+        this.rates = data;    
+
+        console.table(data);
+
+        this.output();
+
+      },
 
       sort: null,
 
@@ -18,17 +28,19 @@ let data = await fetch(url);
 
       output(){
 
+        let ratesToShow = this.rates;
+
         if(this.sort){
           if(this.sort == 'up'){
-              ratesToShow.sort((a, b) => a.rate - b.rate);
+              ratesToShow.sort((a, b) => a.price - b.price);
           }else if(this.sort == 'down'){
-              ratesToShow.sort((a, b) => b.rate - a.rate);
+              ratesToShow.sort((a, b) => b.price - a.price);
           }
       }
 
         let cardsForJs = document.getElementById('card_inner');
 
-        cardsForJs.innerHTML = data.map( (item) => `
+        cardsForJs.innerHTML = ratesToShow.map( (item) => `
         
         <div class="card m-2 p-2 text-justify">
     
@@ -56,6 +68,7 @@ let data = await fetch(url);
 
     }
 
+    model.load();
 
     let down = document.getElementById('button-down');
     let up = document.getElementById('button-up');
@@ -67,8 +80,6 @@ let data = await fetch(url);
   down.addEventListener('click', function(){
     model.doSort('down');
 });
-
-    
 
         
   
