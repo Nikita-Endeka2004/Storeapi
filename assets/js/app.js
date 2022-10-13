@@ -3,6 +3,8 @@ const url = "https://fakestoreapi.com/products";
     const model = {
 
       rates: [],
+      search: '',
+      sort: null,
 
       async load(){
 
@@ -17,8 +19,6 @@ const url = "https://fakestoreapi.com/products";
 
       },
 
-      sort: null,
-
       doSort(direction){
 
         this.sort = direction;
@@ -26,9 +26,16 @@ const url = "https://fakestoreapi.com/products";
 
       },
 
+      doSearch(s){
+
+          this.search = s.trim().toLowerCase();
+          this.output;
+
+      },
+
       output(){
 
-        let ratesToShow = this.rates;
+        let ratesToShow = this.rates.filter(item => item.category.toLowerCase().includes(this.search));
 
         if(this.sort){
           if(this.sort == 'up'){
@@ -42,24 +49,25 @@ const url = "https://fakestoreapi.com/products";
 
         cardsForJs.innerHTML = ratesToShow.map( (item) => `
         
-        <div class="card m-2 p-2 text-justify">
-    
-                <div class="midle">
-    
-                    <img src="${item.image}" class="m-2 rounded p-2" style="max-width: 100%;" alt="...">
-    
-                </div>
-    
-                <div class="card-body">
-    
-                  <h5 class="card-title">${item.category}</h5>
-                  <p class="card-text">${item.description.substring(0, 50) + (item.description.lenght > 50 ? '...' : '')}</p>
+        <div class="pod_unit">
+
+                <div class="img_in_unit">
+
+                    <img src="${item.image}">
     
                 </div>
+
+                <h5>${item.category}</h5>
     
-                <strong class="font-weight-bold text-end pl-3">${item.price} $</strong>
-    
-        </div>
+                <p>${item.description.toLowerCase().substring(0, 60) + (item.description.lenght > 30 ? '' : '...')}</p>
+
+                <div class="wrap">
+
+                   <p>${item.price} $</p>
+
+                </div>
+
+            </div>
     
         
         `).join('');
@@ -72,6 +80,13 @@ const url = "https://fakestoreapi.com/products";
 
     let down = document.getElementById('button-down');
     let up = document.getElementById('button-up');
+    let searchInput = document.getElementById('search');
+
+    searchInput.addEventListener('input', function(){
+
+      model.doSearch(this.value);
+
+    });
 
     up.addEventListener('click', function(){
       model.doSort('up');
