@@ -4,6 +4,7 @@ const url = "https://fakestoreapi.com/products";
 
       rates: [],
       search: '',
+      searchElse: '',
       sort: null,
 
       async load(){
@@ -29,13 +30,15 @@ const url = "https://fakestoreapi.com/products";
       doSearch(s){
 
           this.search = s.trim().toLowerCase();
-          this.output;
+          this.searchElse = this.search;
+          this.output();
 
       },
 
       output(){
 
         let ratesToShow = this.rates.filter(item => item.category.toLowerCase().includes(this.search));
+        let ratesToShow2 = this.rates.filter(item => item.description.toLowerCase().includes(this.searchElse));
 
         if(this.sort){
           if(this.sort == 'up'){
@@ -46,6 +49,12 @@ const url = "https://fakestoreapi.com/products";
       }
 
         let cardsForJs = document.getElementById('card_inner');
+
+        console.log('1',ratesToShow.length);
+
+        console.log('2',ratesToShow2);
+
+        if(ratesToShow.length !== 0){
 
         cardsForJs.innerHTML = ratesToShow.map( (item) => `
         
@@ -71,6 +80,62 @@ const url = "https://fakestoreapi.com/products";
     
         
         `).join('');
+
+        }else if(ratesToShow.length == 0 && ratesToShow2.length !== 0){
+
+          cardsForJs.innerHTML = ratesToShow2.map( (item) => `
+        
+          <div class="pod_unit">
+  
+                  <div class="img_in_unit">
+  
+                      <img src="${item.image}">
+      
+                  </div>
+  
+                  <h5>${item.category}</h5>
+      
+                  <p>${item.description.toLowerCase().substring(0, 60) + (item.description.lenght > 30 ? '' : '...')}</p>
+  
+                  <div class="wrap">
+  
+                     <p>${item.price} $</p>
+  
+                  </div>
+  
+              </div>
+      
+          
+          `).join('');  
+
+        }else{
+
+          cardsForJs.innerHTML = ratesToShow2.map( (item) => `
+        
+          <div class="pod_unit">
+  
+                  <div class="img_in_unit">
+  
+                      <img src="${item.image}">
+      
+                  </div>
+  
+                  <h5>${item.category}</h5>
+      
+                  <p>${item.description.toLowerCase().substring(0, 60) + (item.description.lenght > 30 ? '' : '...')}</p>
+  
+                  <div class="wrap">
+  
+                     <p>${item.price} $</p>
+  
+                  </div>
+  
+              </div>
+      
+          
+          `).join(''); 
+
+        }
 
       }
 
